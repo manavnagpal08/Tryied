@@ -1,117 +1,47 @@
 import streamlit as st
+import streamlit.components.v1 as components
+import requests
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
-st.set_page_config(
-    page_title="ScreenerPro – Test Layout",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+from firebase_config import FIREBASE_AUTH_SIGNIN_URL
 
-# =====================================================
-# GLOBAL STYLES (HEADER + FOOTER SAFE)
-# =====================================================
-st.markdown("""
-<style>
-body {
-    background-color: #f8fafc;
-    font-family: Inter, sans-serif;
-}
+# ======================================================
+# LOGIN SECTION (HTML BASED)
+# ======================================================
+def login_section():
 
-/* FOOTER */
-.footer {
-    background: #1e3a8a;
-    padding: 60px 40px;
-    color: #e2e8f0;
-    margin-top: 80px;
-}
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
 
-.footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    max-width: 1200px;
-    margin: auto;
-}
+    st.markdown("<style>header{visibility:hidden;}</style>", unsafe_allow_html=True)
 
-.footer h4 {
-    color: #38bdf8;
-    margin-bottom: 16px;
-}
+    # Load HTML
+    with open("auth/login.html", "r", encoding="utf-8") as f:
+        html = f.read()
 
-.footer a {
-    color: #94a3b8;
-    display: block;
-    margin-bottom: 10px;
-    text-decoration: none;
-}
+    data = components.html(html, height=650)
 
-.footer a:hover {
-    color: #38bdf8;
-}
+    # 🚀 DATA COMING FROM HTML
+    if data and data.get("action") == "login":
+        email = data.get("email")
+        password = data.get("password")
 
-.footer-bottom {
-    margin-top: 40px;
-    border-top: 1px solid #3b82f6;
-    padding-top: 20px;
-    text-align: center;
-    font-size: 14px;
-}
-</style>
-""", unsafe_allow_html=True)
+        if not email or not password:
+            st.error("Email and password required")
+            return False
 
-# =====================================================
-# MAIN CONTENT (SIMULATING main.py APP CONTENT)
-# =====================================================
-st.title("🧪 ScreenerPro – Main App Test Page")
+        # Firebase auth
+        auth_res = requests.post(
+            FIREBASE_AUTH_SIGNIN_URL,
+            json={"email": email, "password": password, "returnSecureToken": True},
+        )
 
-st.write("""
-This is a **test main.py** to verify:
-- Footer visibility
-- Footer position
-- No black / white screen bug
-- Works even when page is scrolled
-""")
+        if auth_res.status_code != 200:
+            st.error("❌ Invalid credentials")
+            return False
 
-for i in range(25):
-    st.write(f"Dummy content line {i+1} to enable scrolling...")
+        auth = auth_res.json()
+        st.session_state.authenticated = True
+        st.session_state.user_uid = auth["localId"]
+        st.session_state.user_email = email
 
-# =====================================================
-# FOOTER (SAME AS LANDING PAGE DESIGN)
-# =====================================================
-st.markdown("""
-<div class="footer">
-    <div class="footer-grid">
-        <div>
-            <h4>ScreenerPro</h4>
-            <a href="#">About Us</a>
-            <a href="#">Careers</a>
-            <a href="#">Privacy Policy</a>
-        </div>
-
-        <div>
-            <h4>Solutions</h4>
-            <a href="#">Recruiter Platform</a>
-            <a href="#">Candidate Tools</a>
-            <a href="#">AI Workflow</a>
-        </div>
-
-        <div>
-            <h4>Resources</h4>
-            <a href="#">Download Proposal</a>
-            <a href="#">Request Support</a>
-        </div>
-
-        <div>
-            <h4>Connect</h4>
-            <a href="#">LinkedIn</a>
-            <a href="#">Email Us</a>
-        </div>
-    </div>
-
-    <div class="footer-bottom">
-        © 2025 ScreenerPro Technologies Inc. – AI Talent Intelligence Platform
-    </div>
-</div>
-""", unsafe_allow_html=True)
+        st.rerun()
