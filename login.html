@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ScreenerPro • Secure Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<title>ScreenerPro • Authentication</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -11,8 +11,8 @@
 :root {
   --primary: #2563eb;
   --secondary: #6366f1;
-  --bg-dark: #020617;
-  --card-bg: rgba(255,255,255,0.08);
+  --bg: #020617;
+  --glass: rgba(255,255,255,0.08);
   --border: rgba(255,255,255,0.18);
   --text: #f8fafc;
   --muted: #94a3b8;
@@ -20,45 +20,60 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
 
 body {
-  margin: 0;
-  height: 100vh;
   background: radial-gradient(circle at top, #1e3a8a, #020617 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   color: var(--text);
 }
 
+/* ===== BACKGROUND GLOW ===== */
 body::before {
   content: "";
   position: absolute;
-  width: 600px;
-  height: 600px;
+  width: 700px;
+  height: 700px;
   background: radial-gradient(circle, #6366f1, transparent 70%);
-  filter: blur(120px);
-  animation: floatGlow 10s infinite alternate;
+  filter: blur(140px);
+  animation: floatGlow 12s infinite alternate;
 }
 
 @keyframes floatGlow {
-  from { transform: translate(-100px, -50px); }
-  to { transform: translate(150px, 80px); }
+  from { transform: translate(-120px, -80px); }
+  to { transform: translate(160px, 120px); }
 }
 
-.auth-wrapper {
-  position: relative;
+/* ===== SCREENS ===== */
+.screen {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* ===== AUTH CARD ===== */
+.auth-card {
   width: 420px;
-  background: var(--card-bg);
+  background: var(--glass);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 38px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
-  animation: fadeIn 0.9s ease;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55);
+  animation: fadeIn 0.8s ease;
 }
 
 @keyframes fadeIn {
@@ -69,45 +84,41 @@ body::before {
 .logo {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .logo img {
-  height: 52px;
+  height: 56px;
 }
 
-.auth-header {
+h2 {
   text-align: center;
-  margin-bottom: 28px;
-}
-
-.auth-header h2 {
   margin: 0;
-  font-size: 24px;
   font-weight: 800;
 }
 
-.auth-header p {
-  margin-top: 6px;
+.subtitle {
+  text-align: center;
   color: var(--muted);
   font-size: 14px;
+  margin: 8px 0 26px;
 }
 
+/* ===== TABS ===== */
 .tabs {
   display: flex;
   background: rgba(255,255,255,0.08);
   border-radius: 14px;
-  margin-bottom: 26px;
   overflow: hidden;
+  margin-bottom: 24px;
 }
 
 .tab {
   flex: 1;
-  text-align: center;
   padding: 12px;
-  font-weight: 600;
+  text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-weight: 600;
   color: var(--muted);
 }
 
@@ -116,48 +127,42 @@ body::before {
   color: white;
 }
 
-.form {
+/* ===== FORMS ===== */
+form {
   display: none;
-  animation: slideUp 0.4s ease;
 }
 
-.form.active {
+form.active {
   display: block;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .field {
   margin-bottom: 16px;
 }
 
-.field label {
+label {
   font-size: 13px;
   color: var(--muted);
   display: block;
   margin-bottom: 6px;
 }
 
-.field input {
+input {
   width: 100%;
   padding: 13px 14px;
   border-radius: 12px;
-  border: 1px solid transparent;
+  border: none;
+  outline: none;
   background: rgba(255,255,255,0.08);
   color: white;
-  outline: none;
-  transition: 0.25s;
 }
 
-.field input:focus {
-  border-color: var(--primary);
-  background: rgba(255,255,255,0.12);
+input:focus {
+  outline: 2px solid var(--primary);
 }
 
-.auth-btn {
+/* ===== BUTTON ===== */
+button {
   width: 100%;
   padding: 14px;
   border-radius: 14px;
@@ -167,153 +172,170 @@ body::before {
   font-size: 15px;
   color: white;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
-  box-shadow: 0 15px 30px rgba(99,102,241,0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 18px 36px rgba(99,102,241,0.45);
+  margin-top: 10px;
 }
 
-.auth-btn:hover {
+button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(99,102,241,0.55);
 }
 
-.auth-footer {
+/* ===== WELCOME SCREEN ===== */
+.welcome {
   text-align: center;
-  font-size: 13px;
+  animation: fadeIn 0.9s ease;
+}
+
+.welcome h1 {
+  font-size: 36px;
+  font-weight: 900;
+}
+
+.welcome p {
   color: var(--muted);
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.email-box {
   margin-top: 20px;
+  padding: 14px 22px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+  display: inline-block;
+  font-weight: 600;
 }
 </style>
 </head>
 
 <body>
 
-<div class="auth-wrapper">
+<!-- ================= AUTH SCREEN ================= -->
+<div class="screen active" id="authScreen">
+  <div class="auth-card">
 
-  <div class="logo">
-    <img src="logo.png" alt="ScreenerPro Logo">
-  </div>
+    <div class="logo">
+      <img src="logo.png" alt="ScreenerPro">
+    </div>
 
-  <div class="auth-header">
     <h2>Welcome to ScreenerPro</h2>
-    <p>AI-powered talent intelligence platform</p>
+    <div class="subtitle">AI-powered talent intelligence</div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('signup')">Create Account</div>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" class="active">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" required />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" required />
+      </div>
+      <button>Login</button>
+    </form>
+
+    <!-- SIGNUP -->
+    <form id="signupForm">
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" required />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" required />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" required />
+      </div>
+      <button>Create Account</button>
+    </form>
+
   </div>
+</div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="showForm('login')">Login</div>
-    <div class="tab" onclick="showForm('signup')">Create Account</div>
-  </div>
-
-  <!-- LOGIN -->
-  <form class="form active" id="login">
-    <div class="field">
-      <label>Email</label>
-      <input type="email" required>
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" required>
-    </div>
-    <button class="auth-btn">Login</button>
-  </form>
-
-  <!-- SIGNUP -->
-  <form class="form" id="signup">
-    <div class="field">
-      <label>Full Name</label>
-      <input type="text" required>
-    </div>
-    <div class="field">
-      <label>Email</label>
-      <input type="email" required>
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" required>
-    </div>
-    <button class="auth-btn">Create Account</button>
-  </form>
-
-  <div class="auth-footer">
-    © 2025 ScreenerPro • Secure Authentication
+<!-- ================= WELCOME SCREEN ================= -->
+<div class="screen" id="welcomeScreen">
+  <div class="welcome">
+    <h1>Welcome 👋</h1>
+    <p>You are successfully logged in</p>
+    <div class="email-box" id="userEmail"></div>
   </div>
 </div>
 
 <script>
-/* ================= FIREBASE CONFIG ================= */
-const FIREBASE_API_KEY = "AIzaSyDjC7tdmpEkpsipgf9r1c3HlTO7C7BZ6Mw";
+/* ========== FIREBASE CONFIG ========== */
+const API_KEY = "AIzaSyDjC7tdmpEkpsipgf9r1c3HlTO7C7BZ6Mw";
+const LOGIN_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`;
+const SIGNUP_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
 
-const LOGIN_URL =
-  `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`;
-
-const SIGNUP_URL =
-  `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`;
-
-/* ================= TAB SWITCH ================= */
-function showForm(type) {
+/* ========== UI HELPERS ========== */
+function switchTab(type) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".form").forEach(f => f.classList.remove("active"));
+  document.querySelectorAll("form").forEach(f => f.classList.remove("active"));
 
   if (type === "login") {
     document.querySelectorAll(".tab")[0].classList.add("active");
-    document.getElementById("login").classList.add("active");
+    loginForm.classList.add("active");
   } else {
     document.querySelectorAll(".tab")[1].classList.add("active");
-    document.getElementById("signup").classList.add("active");
+    signupForm.classList.add("active");
   }
 }
 
-/* ================= LOGIN ================= */
-document.getElementById("login").addEventListener("submit", async (e) => {
+function showWelcome(email) {
+  document.getElementById("authScreen").classList.remove("active");
+  document.getElementById("welcomeScreen").classList.add("active");
+  document.getElementById("userEmail").innerText = email;
+
+  // 🔗 send token to Streamlit
+  window.parent.postMessage(
+    { type: "AUTH_SUCCESS", email: email },
+    "*"
+  );
+}
+
+/* ========== LOGIN ========== */
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const [email, password] = e.target.querySelectorAll("input");
 
-  const email = e.target.querySelectorAll("input")[0].value;
-  const password = e.target.querySelectorAll("input")[1].value;
+  const res = await fetch(LOGIN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+      returnSecureToken: true
+    })
+  });
 
-  try {
-    const res = await fetch(LOGIN_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, returnSecureToken: true })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw data.error.message;
-
-    localStorage.setItem("idToken", data.idToken);
-    localStorage.setItem("email", data.email);
-
-    alert("Login successful 🚀");
-    // window.location.href = "/dashboard.html";
-
-  } catch (err) {
-    alert("Login failed: " + err.replaceAll("_", " "));
-  }
+  const data = await res.json();
+  if (res.ok) showWelcome(data.email);
 });
 
-/* ================= SIGNUP ================= */
-document.getElementById("signup").addEventListener("submit", async (e) => {
+/* ========== SIGNUP ========== */
+signupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const inputs = e.target.querySelectorAll("input");
-  const email = inputs[1].value;
-  const password = inputs[2].value;
 
-  try {
-    const res = await fetch(SIGNUP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, returnSecureToken: true })
-    });
+  const res = await fetch(SIGNUP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: inputs[1].value,
+      password: inputs[2].value,
+      returnSecureToken: true
+    })
+  });
 
-    const data = await res.json();
-    if (!res.ok) throw data.error.message;
-
-    alert("Account created successfully 🎉");
-    showForm("login");
-
-  } catch (err) {
-    alert("Signup failed: " + err.replaceAll("_", " "));
-  }
+  const data = await res.json();
+  if (res.ok) showWelcome(data.email);
 });
 </script>
 
